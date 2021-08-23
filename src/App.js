@@ -1,13 +1,22 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+
+import { useForm, useFieldArray } from 'react-hook-form';
+
+import FieldArray from './FieldArray';
+const defaultValues = {
+    experiences: [],
+};
 
 export default function App() {
     const {
         register,
+        control,
         handleSubmit,
         watch,
+        setValue,
+        getValues,
         formState: { errors },
-    } = useForm();
+    } = useForm({ defaultValues: { experiences: [] } });
     const onSubmit = (data) => console.log(data);
 
     console.log(watch('example')); // watch input value by passing the name of it
@@ -15,15 +24,20 @@ export default function App() {
     return (
         /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
         <form onSubmit={handleSubmit(onSubmit)}>
-            {/* register your input into the hook by invoking the "register" function */}
-            <input defaultValue="test" {...register('example')} />
-
-            {/* include validation with required or other standard HTML validation rules */}
-            <input {...register('exampleRequired', { required: true })} />
-            {/* errors will return when field validation fails  */}
-            {errors.exampleRequired && <span>This field is required</span>}
-
-            <input type="submit" />
+            <div className="mt-5">
+                <FieldArray
+                    {...{
+                        control,
+                        register,
+                        defaultValues,
+                        getValues,
+                        setValue,
+                        errors,
+                        detailType: 'experiences',
+                    }}
+                />
+            </div>
+            <button type="submit">Submit</button>
         </form>
     );
 }
